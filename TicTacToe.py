@@ -1,13 +1,19 @@
+import random
+
 grid = [1,2,3, #initialiser ma grille "vide" de neuf cases
         4,5,6,
         7,8,9] 
 
 winning_cases = [(0,1,2), (3,4,5), (6,7,8), (0,3,6), #initialiser liste de listes de victoire possible
                 (1,4,7), (2,5,8), (0,4,8), (2,4,6)]  #important de commencer par l'index zero
+
 choice = 0 
+choice_player = 0
 player_count = 1
 game_on_off = True 
 
+def random_choice_ai (): #fonction dont l'output est uniquement un integer choisi depuis la list grid
+    return random.choice([i for i, x in enumerate(grid) if isinstance(x, int)]) #parcourir tout les elements de grid et creer une liste contenant tout intergers 
 
 def display(): #fonction pour afficher ma grille
         for i in range(0, len(grid), 3): #boucle pour afficher le contenu de ma grille sur trois ligne et d'avancer par trois cases
@@ -19,21 +25,40 @@ def display(): #fonction pour afficher ma grille
 
 def input_choice(player): #boucle pour gérer les conditions d'input et les erreurs
     while True: 
-            try : 
-                print("Choisissez une case entre 1 et 9")
-                if player % 2 == 0 :
-                    n_choice = int(input("joueur X : "))
-                else :
-                    n_choice = int(input("joueur O : "))
-                if  1 <= n_choice <= 9 : #verifie la plage
-                    if isinstance(grid[n_choice-1], int): #verifie qu'il s'agit d'un int
-                        return n_choice-1
-                    else : 
-                        print("case déja prise, réessayez")
-                else :
-                    print("Erreur, le chiffre doit etre entre 1 et 9")
-            except ValueError: #il ne s'agit pas d'un int
-                print("Erreur, la valeur ne peut pas etre un string et doit etre un chiffre entre 1 et 9")
+            if game_mode == 1:
+                try : 
+                    print("Choisissez une case entre 1 et 9")
+                    if player % 2 == 0 :
+                        n_choice = int(input("joueur X :\n> "))
+                    else :
+                        n_choice = int(input("joueur O :\n> "))
+                    if  1 <= n_choice <= 9 : #verifie la plage
+                        if isinstance(grid[n_choice-1], int): #verifie qu'il s'agit d'un int
+                            return n_choice-1
+                        else : 
+                            print("case déja prise, réessayez")
+                    else :
+                        print("Erreur, le chiffre doit etre entre 1 et 9")
+                except ValueError: #il ne s'agit pas d'un int
+                    print("Erreur, la valeur ne peut pas etre un string et doit etre un chiffre entre 1 et 9")
+            else :
+                # if player % 2 == 0 :
+                    try : 
+                        print("Choisissez une case entre 1 et 9")
+                        n_choice = int(input("joueur X :\n> "))
+                        if  1 <= n_choice <= 9 : #verifie la plage
+                            if isinstance(grid[n_choice-1], int): #verifie qu'il s'agit d'un int
+                                return n_choice-1
+                            else : 
+                                print("case déja prise, réessayez")
+                        else :
+                            print("Erreur, le chiffre doit etre entre 1 et 9")
+                    except ValueError: #il ne s'agit pas d'un int
+                        print("Erreur, la valeur ne peut pas etre un string et doit etre un chiffre entre 1 et 9")
+
+                # else :
+                #     n_choice = random_choice_ai()
+                #     return n_choice
 
 def check_victory(input_grid_function): #fonction pour verifier les conditions de victoire
     for i,j,k in winning_cases:
@@ -48,22 +73,47 @@ def check_victory(input_grid_function): #fonction pour verifier les conditions d
             print("match nul")  
             return True
 
+print("pour jouer contre un autre joueur tappez '1' \npour jouer contre un robot tappez '2'")
 
+while True:#choix du mode de jeu avec gestion des exceptions d'input
+    try :
+        game_mode = int(input("> "))
+        if game_mode in [1, 2]:
+            break
+        else :
+            print("la valeur doit etre 1 ou 2")
+    except ValueError:
+        print("Erreur, la valeur ne peut pas etre un string et doit etre soit 1 soit 2")
 
 
 while game_on_off: #boucle de jeu
-    if player_count % 2 == 0 : #condition tour joueur 
-        print("tour du joueur X")
-        grid[input_choice(player_count)] = 'X' #input le symbole correspondant dans la grid 
-        display() 
-        if check_victory(grid): # appelle la fonction de verification de victoire
-            game_on_off = False 
+    if game_mode == 1: 
+        if player_count % 2 == 0 : #condition tour joueur 
+            print("tour du joueur X")
+            grid[input_choice(player_count)] = 'X' #input le symbole correspondant dans la grid 
+            display() 
+            if check_victory(grid): # appelle la fonction de verification de victoire
+                game_on_off = False 
+        else :
+            print("tour du joueur O")
+            grid[input_choice(player_count)] = 'O'
+            display()
+            if check_victory(grid):
+                game_on_off = False
     else :
-        print("tour du joueur O")
-        grid[input_choice(player_count)] = 'O'
-        display()
-        if check_victory(grid):
-            game_on_off = False
+        if player_count % 2 == 0 :
+            print("Votre tour X")
+            grid[input_choice(player_count)] = 'X' 
+            display() 
+            if check_victory(grid): 
+                game_on_off = False 
+        else :
+            print("tour du robot O")
+            grid[random_choice_ai()] = 'O'
+            display()
+            if check_victory(grid):
+                game_on_off = False
+
     player_count+=1
 
 
