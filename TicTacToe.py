@@ -4,7 +4,7 @@ grid = [1,2,3, #initialiser ma grille "vide" de neuf cases
         4,5,6,
         7,8,9] 
 
-winning_cases = [[0,1,2], (3,4,5), (6,7,8), (0,3,6), #initialiser liste de listes de victoire possible
+winning_cases = [(0,1,2), (3,4,5), (6,7,8), (0,3,6), #initialiser liste de listes de victoire possible
                 (1,4,7), (2,5,8), (0,4,8), (2,4,6)]  #important de commencer par l'index zero
 
 choice = 0 
@@ -18,26 +18,28 @@ def average_difficulty_choice_ai(): # difficultés normal
         j_tab = [] #crée une liste vide 
         for j in i: #parcourt les elements de la liste
             j_tab.append(grid[j])
-        n_tab = sum(1 for k in j_tab if isinstance(k, str)) #parcourt la liste et somme les 'char' est entier
-        if n_tab == 2 :
-            n_tab_x = j_tab.count('X')
-            n_tab_o = j_tab.count('O')
+            n_tab_o = 0
+            n_tab_x = 0
+            n_tab = sum(1 for k in j_tab if isinstance(k, str)) #parcourt la liste et somme les 'char' est entier
+            if n_tab == 2 :
+                n_tab_x = j_tab.count('X')
+                n_tab_o = j_tab.count('O')
             if n_tab_o == 2 : #si les deux cases prises gagne
                 for i_grid in i:
                     if isinstance(grid[i_grid], int):
-                        grid[i_grid]='X'
+                        grid[i_grid]='O'
                         return
             elif n_tab_x == 2: #si les deux cases prises empeche de gagner
                 for i_grid in i:
                     if isinstance(grid[i_grid], int):
                         grid[i_grid]='O'
                         return
-            elif isinstance(grid[4], int): #sinon si le centre est vide (forte probas de gagner)
-                grid[4]='O'
-                return
-            else:
-                grid[random.choice([i for i, x in enumerate(grid) if isinstance(x, int)])] = 'O'
-                return
+        if isinstance(grid[4], int): #sinon si le centre est vide (forte probas de gagner)
+            grid[4]='O'
+            return
+        else:
+            grid[random.choice([i for i, x in enumerate(grid) if isinstance(x, int)])] = 'O'
+            return
 
 def random_choice_ai (): #fonction dont l'output est uniquement un integer choisi depuis la list grid
     return random.choice([i for i, x in enumerate(grid) if isinstance(x, int)]) #parcourir tout les elements de grid et creer une liste contenant tout intergers en récuperant l'index et la valeur associé 
