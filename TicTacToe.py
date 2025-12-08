@@ -9,7 +9,7 @@ winning_cases = [(0,1,2), (3,4,5), (6,7,8), (0,3,6), #initialiser liste de liste
 
 choice = 0 
 choice_player = 0
-player_count = 1
+player_count = random.randrange(1, 2)
 game_on_off = True
 difficulty_choice = 0
 
